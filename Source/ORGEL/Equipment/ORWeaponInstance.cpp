@@ -25,5 +25,9 @@ void UORWeaponInstance::SetPawn(APawn* Pawn)
 	MeshComponent->SetSkeletalMeshAsset(WeaponData->GetMesh());
 	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	MeshComponent->SetupAttachment(CastChecked<ACharacter>(Pawn)->GetMesh(), WeaponData->GetAttachSocketName());
+
+	// 메시마다 다른 정면 축과 크기를 무기 데이터의 회전과 스케일로 소켓 기준에서 보정합니다.
+	MeshComponent->SetRelativeRotation(WeaponData->GetAttachRotation());
+	MeshComponent->SetRelativeScale3D(WeaponData->GetAttachScale());
 	MeshComponent->RegisterComponent();
 }
