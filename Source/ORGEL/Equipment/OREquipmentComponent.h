@@ -1,31 +1,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ActiveGameplayEffectHandle.h"
 #include "Components/ActorComponent.h"
-#include "AbilitySystem/ORAbilitySet.h"
 #include "OREquipmentData.h"
 #include "OREquipmentComponent.generated.h"
 
+class APawn;
+class APlayerState;
+class UOREquipmentInstance;
 class UORAbilitySystemComponent;
-
-USTRUCT()
-struct FOREquipmentEntry
-{
-	GENERATED_BODY()
-
-	/** 어빌리티가 출처로 참조하는 장비 데이터가 장착 중 수거되지 않도록 보관합니다. */
-	UPROPERTY(Transient)
-	TObjectPtr<UOREquipmentData> EquipmentData;
-
-	/** 이 장비가 부여한 어빌리티를 해제 시 함께 회수할 수 있도록 핸들을 보관합니다. */
-	UPROPERTY(Transient)
-	FORAbilitySet_GrantedHandles AbilityHandles;
-
-	/** 이 장비가 적용한 효과를 해제 시 함께 제거할 수 있도록 핸들을 보관합니다. */
-	UPROPERTY(Transient)
-	TArray<FActiveGameplayEffectHandle> EffectHandles;
-};
 
 UCLASS()
 class ORGEL_API UOREquipmentComponent : public UActorComponent
@@ -33,13 +16,21 @@ class ORGEL_API UOREquipmentComponent : public UActorComponent
 	GENERATED_BODY()
 
 // ─────────────────────────────────────────────────────────────
+// Lifecycle
+// ─────────────────────────────────────────────────────────────
+private:
+	/** 소유 플레이어 상태의 Pawn 변경 이벤트를 등록합니다. */
+	virtual void BeginPlay() override;
+
+
+// ─────────────────────────────────────────────────────────────
 // Equipment
 // ─────────────────────────────────────────────────────────────
 public:
-	/** 같은 슬롯의 기존 장비를 해제한 뒤 새 장비의 어빌리티와 효과를 부여합니다. */
-	void Equip(UOREquipmentData* EquipmentData);
+	/** 장비 데이터로 인스턴스를 생성하고, 같은 슬롯의 기존 장비를 바닥에 떨어뜨린 뒤 장착합니다. */
+	void Equip(const UOREquipmentData* EquipmentData);
 
-	/** 지정한 슬롯의 장비가 부여한 어빌리티와 효과를 회수하고 슬롯을 비웁니다. */
+	/** 지정한 슬롯의 장비가 부여한 어빌리티와 효과 및 외형을 회수하고 Pawn 발밑에 떨어뜨립니다. */
 	void Unequip(EOREquipmentSlot Slot);
 
 private:
@@ -48,10 +39,19 @@ private:
 
 
 // ─────────────────────────────────────────────────────────────
+// Pawn
+// ─────────────────────────────────────────────────────────────
+private:
+	/** Pawn이 생성되거나 교체되면 장착 중인 장비의 외형을 새 Pawn으로 옮깁니다. */
+	UFUNCTION()
+	void HandlePawnSet(APlayerState* Player, APawn* NewPawn, APawn* OldPawn);
+
+
+// ─────────────────────────────────────────────────────────────
 // Equipment Variables
 // ─────────────────────────────────────────────────────────────
 private:
-	/** 슬롯별로 장착 중인 장비와 회수용 핸들을 보관합니다. */
+	/** 슬롯별로 장착 중인 장비 인스턴스를 보관합니다. */
 	UPROPERTY(Transient)
-	TMap<EOREquipmentSlot, FOREquipmentEntry> EquippedEntries;
+	TMap<EOREquipmentSlot, TObjectPtr<UOREquipmentInstance>> EquippedInstances;
 };

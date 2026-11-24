@@ -1,67 +1,76 @@
 #include "OREquipmentComponent.h"
 
 #include "AbilitySystemGlobals.h"
-#include "GameplayEffect.h"
+#include "OREquipmentInstance.h"
+#include "OREquipmentPickup.h"
 #include "AbilitySystem/ORAbilitySystemComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/PlayerState.h"
 
-void UOREquipmentComponent::Equip(UOREquipmentData* EquipmentData)
+void UOREquipmentComponent::BeginPlay()
 {
-	// 같은 슬롯에 장착된 기존 장비의 어빌리티와 효과를 먼저 회수합니다.
-	Unequip(EquipmentData->GetSlot());
+	Super::BeginPlay();
 
-	UORAbilitySystemComponent* ASC = GetAbilitySystemComponent();
-	FOREquipmentEntry Entry;
-	Entry.EquipmentData = EquipmentData;
+	// 장착 이후 Pawn이 생성되거나 교체되어도 장비 외형이 따라가도록 Pawn 변경 이벤트를 등록합니다.
+	CastChecked<APlayerState>(GetOwner())->OnPawnSet.AddDynamic(this, &ThisClass::HandlePawnSet);
+}
 
-	// 어빌리티 세트를 지정한 장비만 어빌리티를 부여하고 회수용 핸들을 기록합니다.
-	if (const UORAbilitySet* AbilitySet = EquipmentData->GetAbilitySet())
-	{
-		AbilitySet->GiveToAbilitySystem(ASC, &Entry.AbilityHandles, EquipmentData);
-	}
+void UOREquipmentComponent::Equip(const UOREquipmentData* EquipmentData)
+{
+	// 같은 슬롯에 장착된 기존 장비를 먼저 해제하여 바닥에 떨어뜨립니다.
+	const EOREquipmentSlot Slot = EquipmentData->GetSlot();
+	Unequip(Slot);
 
-	// 효과의 출처를 장비 데이터로 기록하여 이후 피해와 버프 계산에서 구분할 수 있도록 합니다.
-	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
-	EffectContext.AddSourceObject(EquipmentData);
+	// 장비 종류에 맞는 인스턴스를 생성하고 원본 데이터를 연결합니다.
+	UOREquipmentInstance* EquipmentInstance = NewObject<UOREquipmentInstance>(GetOwner(), EquipmentData->GetInstanceClass());
+	EquipmentInstance->SetEquipmentData(EquipmentData);
 
-	// 설정된 효과를 자신에게 적용하고 실제로 활성화된 효과만 회수 목록에 등록합니다.
-	for (const TSubclassOf<UGameplayEffect>& EffectClass : EquipmentData->GetGameplayEffects())
-	{
-		if (!EffectClass)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("장비 데이터의 비어 있는 효과 항목을 건너뜁니다: %s"), *EquipmentData->GetName());
-			continue;
-		}
+	// 어빌리티와 효과를 부여하고 현재 Pawn에 외형을 표시하며, Pawn이 아직 없으면 Pawn 변경 이벤트에서 표시합니다.
+	EquipmentInstance->GiveToAbilitySystem(GetAbilitySystemComponent());
+	EquipmentInstance->SetPawn(CastChecked<APlayerState>(GetOwner())->GetPawn());
 
-		const FActiveGameplayEffectHandle Handle = ASC->ApplyGameplayEffectToSelf(EffectClass.GetDefaultObject(), 1.0f, EffectContext);
-		if (Handle.IsValid())
-		{
-			Entry.EffectHandles.Add(Handle);
-		}
-	}
-
-	// 부여를 마친 장비를 슬롯에 등록합니다.
-	EquippedEntries.Add(EquipmentData->GetSlot(), MoveTemp(Entry));
+	// 장착을 마친 인스턴스를 슬롯에 등록합니다.
+	EquippedInstances.Add(Slot, EquipmentInstance);
 }
 
 void UOREquipmentComponent::Unequip(EOREquipmentSlot Slot)
 {
 	// 회수 콜백이 재진입해도 같은 장비를 다시 처리하지 않도록 슬롯에서 먼저 꺼내며, 빈 슬롯은 처리하지 않습니다.
-	FOREquipmentEntry Entry;
-	if (!EquippedEntries.RemoveAndCopyValue(Slot, Entry))
+	TObjectPtr<UOREquipmentInstance> EquipmentInstance;
+	if (!EquippedInstances.RemoveAndCopyValue(Slot, EquipmentInstance))
 	{
 		return;
 	}
 
-	// 장비가 부여한 어빌리티를 회수하고 적용한 효과를 모두 제거합니다.
-	UORAbilitySystemComponent* ASC = GetAbilitySystemComponent();
-	Entry.AbilityHandles.TakeFromAbilitySystem(ASC);
-	for (const FActiveGameplayEffectHandle& Handle : Entry.EffectHandles)
+	// 장비가 표시한 외형을 제거하고 부여한 어빌리티와 효과를 회수합니다.
+	EquipmentInstance->SetPawn(nullptr);
+	EquipmentInstance->TakeFromAbilitySystem(GetAbilitySystemComponent());
+
+	// 떨어뜨릴 위치를 정할 Pawn이 없으면 장비를 버립니다.
+	const ACharacter* Character = CastChecked<APlayerState>(GetOwner())->GetPawn<ACharacter>();
+	if (!Character)
 	{
-		ASC->RemoveActiveGameplayEffect(Handle);
+		UE_LOG(LogTemp, Warning, TEXT("Pawn이 없어 해제한 장비를 떨어뜨리지 못했습니다: %s"), *EquipmentInstance->GetEquipmentData()->GetName());
+		return;
 	}
+
+	// 캡슐 바닥 위치에 픽업을 생성하고 해제한 인스턴스를 넘겨 장비 상태를 유지합니다.
+	const FVector DropLocation = Character->GetActorLocation() - FVector(0.0f, 0.0f, Character->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	AOREquipmentPickup* Pickup = GetWorld()->SpawnActor<AOREquipmentPickup>(DropLocation, FRotator::ZeroRotator);
+	Pickup->SetEquipmentInstance(EquipmentInstance);
 }
 
 UORAbilitySystemComponent* UOREquipmentComponent::GetAbilitySystemComponent() const
 {
 	return CastChecked<UORAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()));
+}
+
+void UOREquipmentComponent::HandlePawnSet(APlayerState* Player, APawn* NewPawn, APawn* OldPawn)
+{
+	// 장착 중인 모든 장비의 외형을 새 Pawn으로 옮기며, 외형이 없는 장비는 아무것도 하지 않습니다.
+	for (const TPair<EOREquipmentSlot, TObjectPtr<UOREquipmentInstance>>& Pair : EquippedInstances)
+	{
+		Pair.Value->SetPawn(NewPawn);
+	}
 }
