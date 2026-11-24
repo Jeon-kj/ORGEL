@@ -53,6 +53,7 @@ namespace ORGameplayTags
 // ─────────────────────────────────────────────────────────────
 	// 지정한 어빌리티의 재사용 대기 상태를 구분합니다.
 	UE_DEFINE_GAMEPLAY_TAG(Cooldown_Dodge, "Cooldown.Dodge");
+	UE_DEFINE_GAMEPLAY_TAG(Cooldown_Attack, "Cooldown.Attack");
 	
 	
 // ─────────────────────────────────────────────────────────────

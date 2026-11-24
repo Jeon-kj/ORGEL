@@ -107,6 +107,9 @@ public:
 	/** 무기 메시를 부착할 캐릭터 메시의 소켓 이름을 반환합니다. */
 	FName GetAttachSocketName() const { return AttachSocketName; }
 
+	/** 탄환을 생성할 무기 메시의 총구 소켓 이름을 반환합니다. */
+	FName GetMuzzleSocketName() const { return MuzzleSocketName; }
+
 
 // ─────────────────────────────────────────────────────────────
 // Attachment Variables
@@ -115,4 +118,8 @@ private:
 	/** 무기 메시를 부착할 캐릭터 메시의 소켓 이름을 지정합니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수|부착")
 	FName AttachSocketName = TEXT("WeaponSocket");
+
+	/** 탄환을 생성할 무기 메시의 총구 소켓 이름을 지정합니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수|부착")
+	FName MuzzleSocketName = TEXT("MuzzleSocket");
 };

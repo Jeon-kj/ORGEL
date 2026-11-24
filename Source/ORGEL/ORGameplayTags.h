@@ -55,6 +55,7 @@ namespace ORGameplayTags
 // ─────────────────────────────────────────────────────────────
 	// 지정한 어빌리티의 재사용 대기 상태를 구분합니다.
 	ORGEL_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Dodge);
+	ORGEL_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Attack);
 	
 	
 // ─────────────────────────────────────────────────────────────
