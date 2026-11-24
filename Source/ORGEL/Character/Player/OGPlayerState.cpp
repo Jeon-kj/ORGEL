@@ -6,6 +6,7 @@
 #include "AbilitySystem/Attribute/ORMovementSet.h"
 #include "Data/ORCharacterStatData.h"
 #include "Equipment/OREquipmentComponent.h"
+#include "Equipment/ORWeaponData.h"
 #include "GameFramework/Pawn.h"
 
 AOGPlayerState::AOGPlayerState()
@@ -22,6 +23,9 @@ AOGPlayerState::AOGPlayerState()
 
 	// 기존 기본 어빌리티 세트를 실행 시 로드하도록 연결합니다.
 	DefaultAbilitySet = TSoftObjectPtr<UORAbilitySet>(FSoftObjectPath(TEXT("/Game/_ORGEL/Blueprint/Character/Player/DA_PlayerAbilitySet.DA_PlayerAbilitySet")));
+
+	// 런 시작 시 지급할 태엽권총 데이터를 실행 시 로드하도록 연결합니다.
+	DefaultWeaponData = TSoftObjectPtr<UORWeaponData>(FSoftObjectPath(TEXT("/Game/_ORGEL/Blueprint/Equipment/Weapon/DA_WindupPistol.DA_WindupPistol")));
 }
 
 void AOGPlayerState::BeginPlay()
@@ -39,7 +43,12 @@ void AOGPlayerState::BeginPlay()
 	{
 		AbilitySet->GiveToAbilitySystem(ASC, nullptr, this);
 	}
-	
+
+	// 플레이어 상태의 최초 시작 시점에 기본 무기를 장착합니다.
+	if (const UORWeaponData* WeaponData = DefaultWeaponData.LoadSynchronous())
+	{
+		EquipmentComponent->Equip(WeaponData);
+	}
 }
 
 UAbilitySystemComponent* AOGPlayerState::GetAbilitySystemComponent() const

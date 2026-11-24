@@ -5,6 +5,7 @@
 #include "OREquipmentPickup.h"
 #include "AbilitySystem/ORAbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/World.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PlayerState.h"
 
@@ -18,13 +19,17 @@ void UOREquipmentComponent::BeginPlay()
 
 void UOREquipmentComponent::Equip(const UOREquipmentData* EquipmentData)
 {
-	// 같은 슬롯에 장착된 기존 장비를 먼저 해제하여 바닥에 떨어뜨립니다.
-	const EOREquipmentSlot Slot = EquipmentData->GetSlot();
-	Unequip(Slot);
-
-	// 장비 종류에 맞는 인스턴스를 생성하고 원본 데이터를 연결합니다.
+	// 장비 종류에 맞는 인스턴스를 생성하고 원본 데이터를 연결한 뒤 장착합니다.
 	UOREquipmentInstance* EquipmentInstance = NewObject<UOREquipmentInstance>(GetOwner(), EquipmentData->GetInstanceClass());
 	EquipmentInstance->SetEquipmentData(EquipmentData);
+	Equip(EquipmentInstance);
+}
+
+void UOREquipmentComponent::Equip(UOREquipmentInstance* EquipmentInstance)
+{
+	// 같은 슬롯에 장착된 기존 장비를 먼저 해제하여 바닥에 떨어뜨립니다.
+	const EOREquipmentSlot Slot = EquipmentInstance->GetEquipmentData()->GetSlot();
+	Unequip(Slot);
 
 	// 어빌리티와 효과를 부여하고 현재 Pawn에 외형을 표시하며, Pawn이 아직 없으면 Pawn 변경 이벤트에서 표시합니다.
 	EquipmentInstance->GiveToAbilitySystem(GetAbilitySystemComponent());

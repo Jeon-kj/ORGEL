@@ -27,8 +27,11 @@ private:
 // Equipment
 // ─────────────────────────────────────────────────────────────
 public:
-	/** 장비 데이터로 인스턴스를 생성하고, 같은 슬롯의 기존 장비를 바닥에 떨어뜨린 뒤 장착합니다. */
+	/** 장비 데이터로 새 인스턴스를 생성하여 장착합니다. */
 	void Equip(const UOREquipmentData* EquipmentData);
+
+	/** 같은 슬롯의 기존 장비를 바닥에 떨어뜨린 뒤, 상태를 유지한 인스턴스를 그대로 장착합니다. */
+	void Equip(UOREquipmentInstance* EquipmentInstance);
 
 	/** 지정한 슬롯의 장비가 부여한 어빌리티와 효과 및 외형을 회수하고 Pawn 발밑에 떨어뜨립니다. */
 	void Unequip(EOREquipmentSlot Slot);

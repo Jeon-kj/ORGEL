@@ -11,6 +11,7 @@ class UORAbilitySet;
 class UORAbilitySystemComponent;
 class UORCharacterStatData;
 class UORHealthSet;
+class UORWeaponData;
 
 UCLASS()
 class ORGEL_API AOGPlayerState : public APlayerState, public IAbilitySystemInterface
@@ -69,5 +70,16 @@ private:
 	/** 플레이어 상태가 시작될 때 한 번 부여할 기본 어빌리티 세트를 참조합니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수|어빌리티")
 	TSoftObjectPtr<UORAbilitySet> DefaultAbilitySet;
-	
+
+	/** 런 시작 시 기본으로 장착할 무기 데이터를 참조합니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수|장비")
+	TSoftObjectPtr<UORWeaponData> DefaultWeaponData;
+
+
+// ─────────────────────────────────────────────────────────────
+// Getter
+// ─────────────────────────────────────────────────────────────
+public:
+	/** 플레이어의 장비 슬롯 컴포넌트를 반환합니다. */
+	FORCEINLINE UOREquipmentComponent* GetEquipmentComponent() const { return EquipmentComponent; }
 };
