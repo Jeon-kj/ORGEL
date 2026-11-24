@@ -21,4 +21,7 @@ namespace ORCollisionProfiles
 
 	/** 몬스터 캡슐에 사용할 충돌 프로필 이름을 지정합니다. */
 	inline const FName Enemy = TEXT("Enemy");
+
+	/** 플레이어 탄환에 사용할 충돌 프로필 이름을 지정합니다. */
+	inline const FName PlayerProjectile = TEXT("PlayerProjectile");
 }

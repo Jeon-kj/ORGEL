@@ -4,6 +4,8 @@
 #include "OREquipmentData.h"
 #include "ORWeaponData.generated.h"
 
+class AORProjectile;
+
 UCLASS()
 class ORGEL_API UORWeaponData : public UOREquipmentData
 {
@@ -53,6 +55,9 @@ public:
 	/** 탄환이 벽에서 반사될 수 있는 최대 횟수를 반환합니다. */
 	int32 GetMaxBounceCount() const { return MaxBounceCount; }
 
+	/** 발사할 탄환 액터 클래스를 반환합니다. */
+	TSubclassOf<AORProjectile> GetProjectileClass() const { return ProjectileClass; }
+
 
 // ─────────────────────────────────────────────────────────────
 // Weapon Stat Variables
@@ -89,6 +94,10 @@ private:
 	/** 탄환이 벽에서 반사될 수 있는 최대 횟수를 지정합니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수|무기", meta = (ClampMin = "0", UIMin = "0"))
 	int32 MaxBounceCount = 0;
+
+	/** 발사할 탄환 액터 클래스를 지정하며, 무기별 외형은 하위 Blueprint에서 설정합니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수|무기")
+	TSubclassOf<AORProjectile> ProjectileClass;
 
 
 // ─────────────────────────────────────────────────────────────
