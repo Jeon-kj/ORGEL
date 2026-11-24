@@ -5,6 +5,7 @@
 #include "OGEnemy.generated.h"
 
 class UORAbilitySet;
+class UORContactDamageComponent;
 class UORMovementSet;
 class UORCharacterStatData;
 class UORHealthSet;
@@ -37,6 +38,10 @@ private:
 	/** 몬스터의 기본 이동속도와 이동속도 효과를 관리할 속성 세트를 소유합니다. */
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UORMovementSet> MovementSet;
+
+	/** 플레이어와 닿아 있는 동안 접촉 피해를 주는 판정 캡슐을 소유합니다. */
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UORContactDamageComponent> ContactDamageComponent;
 
 	
 // ─────────────────────────────────────────────────────────────

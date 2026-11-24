@@ -5,6 +5,7 @@
 #include "AbilitySystem/Attribute/ORHealthSet.h"
 #include "AbilitySystem/Attribute/ORMovementSet.h"
 #include "AI/Controller/OGAIController.h"
+#include "Combat/ORContactDamageComponent.h"
 #include "Data/ORCharacterStatData.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -22,6 +23,12 @@ AOGEnemy::AOGEnemy(const FObjectInitializer& ObjectInitializer)
 
 	// 몬스터 캡슐을 전용 충돌 프로필로 설정하여 플레이어 탄환이 몬스터를 구분하도록 합니다.
 	GetCapsuleComponent()->SetCollisionProfileName(ORCollisionProfiles::Enemy);
+
+	// 플레이어와 닿아 있는 동안 접촉 피해를 주는 판정 캡슐을 몬스터 캡슐에 부착합니다.
+	{
+		ContactDamageComponent = CreateDefaultSubobject<UORContactDamageComponent>(TEXT("ContactDamageComponent"));
+		ContactDamageComponent->SetupAttachment(GetCapsuleComponent());
+	}
 
 	// 전투방에서 생성된 몬스터도 AI 컨트롤러가 빙의하도록 설정합니다.
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
