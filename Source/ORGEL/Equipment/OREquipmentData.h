@@ -9,7 +9,7 @@ class UORAbilitySet;
 class UOREquipmentInstance;
 class USkeletalMesh;
 
-UENUM()
+UENUM(BlueprintType)
 enum class EOREquipmentSlot : uint8
 {
 	Weapon,
