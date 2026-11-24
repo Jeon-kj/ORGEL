@@ -5,9 +5,30 @@
 #include "GameFramework/Actor.h"
 #include "ORProjectile.generated.h"
 
-class UORWeaponData;
 class UProjectileMovementComponent;
 class USphereComponent;
+
+USTRUCT()
+struct FORProjectileParams
+{
+	GENERATED_BODY()
+
+	/** 탄환의 충돌 반지름을 지정합니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수|탄환", meta = (ClampMin = "0.1", UIMin = "0.1", Units = "cm"))
+	float Radius = 10.0f;
+
+	/** 탄환의 이동 속도를 지정합니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수|탄환", meta = (ClampMin = "1.0", UIMin = "1.0", Units = "cm/s"))
+	float Speed = 1500.0f;
+
+	/** 탄환 사거리를 지정하며, 0이면 사거리 제한이 없습니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수|탄환", meta = (ClampMin = "0.0", UIMin = "0.0", Units = "cm"))
+	float Range = 0.0f;
+
+	/** 탄환이 벽에서 반사될 수 있는 최대 횟수를 지정합니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수|탄환", meta = (ClampMin = "0", UIMin = "0"))
+	int32 MaxBounceCount = 0;
+};
 
 UCLASS()
 class ORGEL_API AORProjectile : public AActor
@@ -26,8 +47,8 @@ public:
 // Initialization
 // ─────────────────────────────────────────────────────────────
 public:
-	/** 무기 수치로 반지름, 탄속, 도탄 횟수, 수명을 설정하고 명중 시 적용할 피해 효과를 보관합니다. 지연 생성 후 FinishSpawning 전에 호출합니다. */
-	void InitializeProjectile(const UORWeaponData& WeaponData, const FGameplayEffectSpecHandle& InDamageSpec);
+	/** 탄환 수치로 반지름, 탄속, 도탄 횟수, 수명을 설정하고 명중 시 적용할 피해 효과를 보관합니다. 지연 생성 후 FinishSpawning 전에 호출합니다. */
+	void InitializeProjectile(const FORProjectileParams& Params, const FGameplayEffectSpecHandle& InDamageSpec);
 
 
 // ─────────────────────────────────────────────────────────────

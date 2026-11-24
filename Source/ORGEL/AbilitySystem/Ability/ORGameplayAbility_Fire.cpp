@@ -61,7 +61,7 @@ void UORGameplayAbility_Fire::ActivateAbility(const FGameplayAbilitySpecHandle H
 
 		// 생성 직후 겹침에도 피해가 적용되도록 수치를 설정한 뒤 생성을 완료합니다.
 		AORProjectile* Projectile = GetWorld()->SpawnActorDeferred<AORProjectile>(WeaponData->GetProjectileClass(), SpawnTransform, Character, Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		Projectile->InitializeProjectile(*WeaponData, DamageSpec);
+		Projectile->InitializeProjectile(WeaponData->GetProjectileParams(), DamageSpec);
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 

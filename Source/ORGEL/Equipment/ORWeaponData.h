@@ -2,9 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "OREquipmentData.h"
+#include "Combat/ORProjectile.h"
 #include "ORWeaponData.generated.h"
-
-class AORProjectile;
 
 UCLASS()
 class ORGEL_API UORWeaponData : public UOREquipmentData
@@ -37,23 +36,14 @@ public:
 	/** 초당 발사 횟수를 반환합니다. */
 	float GetFireRate() const { return FireRate; }
 
-	/** 탄환 사거리를 반환하며, 0이면 사거리 제한이 없습니다. */
-	float GetRange() const { return Range; }
-
-	/** 탄환의 이동 속도를 반환합니다. */
-	float GetProjectileSpeed() const { return ProjectileSpeed; }
-
-	/** 탄환의 충돌 반지름을 반환합니다. */
-	float GetProjectileRadius() const { return ProjectileRadius; }
+	/** 발사할 탄환의 반지름, 탄속, 사거리, 도탄 횟수를 반환합니다. */
+	const FORProjectileParams& GetProjectileParams() const { return ProjectileParams; }
 
 	/** 1회 발사 시 생성할 탄환 수를 반환합니다. */
 	int32 GetProjectileCount() const { return ProjectileCount; }
 
 	/** 여러 탄환을 균등하게 나눌 전방 부채꼴 각도를 반환합니다. */
 	float GetSpreadAngle() const { return SpreadAngle; }
-
-	/** 탄환이 벽에서 반사될 수 있는 최대 횟수를 반환합니다. */
-	int32 GetMaxBounceCount() const { return MaxBounceCount; }
 
 	/** 발사할 탄환 액터 클래스를 반환합니다. */
 	TSubclassOf<AORProjectile> GetProjectileClass() const { return ProjectileClass; }
@@ -71,17 +61,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "변수|무기", meta = (ClampMin = "0.01", UIMin = "0.01"))
 	float FireRate = 2.0f;
 
-	/** 탄환 사거리를 지정하며, 0이면 사거리 제한이 없습니다. */
-	UPROPERTY(EditDefaultsOnly, Category = "변수|무기", meta = (ClampMin = "0.0", UIMin = "0.0", Units = "cm"))
-	float Range = 900.0f;
-
-	/** 탄환의 이동 속도를 지정합니다. */
-	UPROPERTY(EditDefaultsOnly, Category = "변수|무기", meta = (ClampMin = "1.0", UIMin = "1.0", Units = "cm/s"))
-	float ProjectileSpeed = 1500.0f;
-
-	/** 탄환의 충돌 반지름을 지정합니다. */
-	UPROPERTY(EditDefaultsOnly, Category = "변수|무기", meta = (ClampMin = "0.1", UIMin = "0.1", Units = "cm"))
-	float ProjectileRadius = 10.0f;
+	/** 발사할 탄환의 반지름, 탄속, 사거리, 도탄 횟수를 지정합니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수|무기")
+	FORProjectileParams ProjectileParams;
 
 	/** 1회 발사 시 생성할 탄환 수를 지정합니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수|무기", meta = (ClampMin = "1", UIMin = "1"))
@@ -90,10 +72,6 @@ private:
 	/** 여러 탄환을 균등하게 나눌 전방 부채꼴 각도를 지정합니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수|무기", meta = (ClampMin = "0.0", ClampMax = "360.0", UIMin = "0.0", UIMax = "360.0", Units = "deg"))
 	float SpreadAngle = 0.0f;
-
-	/** 탄환이 벽에서 반사될 수 있는 최대 횟수를 지정합니다. */
-	UPROPERTY(EditDefaultsOnly, Category = "변수|무기", meta = (ClampMin = "0", UIMin = "0"))
-	int32 MaxBounceCount = 0;
 
 	/** 발사할 탄환 액터 클래스를 지정하며, 무기별 외형은 하위 Blueprint에서 설정합니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수|무기")

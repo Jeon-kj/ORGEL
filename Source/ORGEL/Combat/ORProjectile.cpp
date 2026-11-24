@@ -4,7 +4,6 @@
 #include "AbilitySystemGlobals.h"
 #include "Components/SphereComponent.h"
 #include "Define/Define.h"
-#include "Equipment/ORWeaponData.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 AORProjectile::AORProjectile()
@@ -36,21 +35,20 @@ AORProjectile::AORProjectile()
 	}
 }
 
-void AORProjectile::InitializeProjectile(const UORWeaponData& WeaponData, const FGameplayEffectSpecHandle& InDamageSpec)
+void AORProjectile::InitializeProjectile(const FORProjectileParams& Params, const FGameplayEffectSpecHandle& InDamageSpec)
 {
 	// 명중 시 적용할 피해 효과와 남은 도탄 횟수를 보관합니다.
 	DamageSpec = InDamageSpec;
-	RemainingBounceCount = WeaponData.GetMaxBounceCount();
+	RemainingBounceCount = Params.MaxBounceCount;
 
 	// 탄환 반지름과 탄속을 적용하며, 생성 완료 시 이동 컴포넌트가 정면 방향 초기 속도를 계산합니다.
-	CollisionComponent->SetSphereRadius(WeaponData.GetProjectileRadius());
-	ProjectileMovementComponent->InitialSpeed = WeaponData.GetProjectileSpeed();
-	ProjectileMovementComponent->MaxSpeed = WeaponData.GetProjectileSpeed();
+	CollisionComponent->SetSphereRadius(Params.Radius);
+	ProjectileMovementComponent->InitialSpeed = Params.Speed;
+	ProjectileMovementComponent->MaxSpeed = Params.Speed;
 
 	// 사거리만큼 이동하면 사라지도록 수명을 정하며, 사거리 제한이 없으면 최대 수명을 적용합니다.
 	// BeginPlay에서 InitialLifeSpan으로 수명이 다시 설정되므로 생성 완료 전에 값을 지정합니다.
-	const float Range = WeaponData.GetRange();
-	InitialLifeSpan = Range > 0.0f ? Range / WeaponData.GetProjectileSpeed() : UnlimitedRangeLifeSpan;
+	InitialLifeSpan = Params.Range > 0.0f ? Params.Range / Params.Speed : UnlimitedRangeLifeSpan;
 }
 
 void AORProjectile::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
