@@ -13,6 +13,8 @@
 #include "AbilitySystem/Attribute/ORHealthSet.h"
 #include "Core/OGGameMode.h"
 #include "Interact/InteractionComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Define/Define.h"
 
 AOGPlayer::AOGPlayer(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -26,6 +28,9 @@ AOGPlayer::AOGPlayer(const FObjectInitializer& ObjectInitializer) : Super(Object
 		GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		GetCharacterMovement()->MaxWalkSpeed = 500.0f;
 	}
+
+	// 플레이어 캡슐을 전용 충돌 프로필로 설정하여 전투 방 감지와 탄환 판정에서 플레이어를 구분합니다.
+	GetCapsuleComponent()->SetCollisionProfileName(ORCollisionProfiles::Player);
 
 	// 플레이어의 회전과 무관한 고정 탑뷰 카메라 암을 생성합니다.
 	{

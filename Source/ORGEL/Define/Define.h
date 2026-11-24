@@ -13,3 +13,12 @@ namespace ORCollisionChannels
 	/** 적을 식별하는 전용 Object Channel을 지정합니다. */
 	inline constexpr ECollisionChannel Enemy = ECC_GameTraceChannel3;
 }
+
+namespace ORCollisionProfiles
+{
+	/** 플레이어 캡슐에 사용할 충돌 프로필 이름을 지정합니다. */
+	inline const FName Player = TEXT("Player");
+
+	/** 몬스터 캡슐에 사용할 충돌 프로필 이름을 지정합니다. */
+	inline const FName Enemy = TEXT("Enemy");
+}

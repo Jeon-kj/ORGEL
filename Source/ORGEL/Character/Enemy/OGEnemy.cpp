@@ -4,6 +4,8 @@
 #include "AbilitySystem/Attribute/ORHealthSet.h"
 #include "AbilitySystem/Attribute/ORMovementSet.h"
 #include "Data/ORCharacterStatData.h"
+#include "Components/CapsuleComponent.h"
+#include "Define/Define.h"
 
 AOGEnemy::AOGEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -14,6 +16,9 @@ AOGEnemy::AOGEnemy(const FObjectInitializer& ObjectInitializer)
 		HealthSet = CreateDefaultSubobject<UORHealthSet>(TEXT("HealthSet"));
 		MovementSet = CreateDefaultSubobject<UORMovementSet>(TEXT("MovementSet"));
 	}
+
+	// 몬스터 캡슐을 전용 충돌 프로필로 설정하여 플레이어 탄환이 몬스터를 구분하도록 합니다.
+	GetCapsuleComponent()->SetCollisionProfileName(ORCollisionProfiles::Enemy);
 }
 
 void AOGEnemy::BeginPlay()

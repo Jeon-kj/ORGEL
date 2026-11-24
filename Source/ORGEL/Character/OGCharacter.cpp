@@ -6,12 +6,20 @@
 #include "OGCharacterMovementComponent.h"
 #include "ORGameplayTags.h"
 #include "AbilitySystem/Attribute/ORHealthSet.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Define/Define.h"
 
 AOGCharacter::AOGCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UOGCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// 이동 상태를 매 프레임 태그에 반영하도록 설정합니다.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// 캐릭터 메시가 플레이어·몬스터 캡슐의 이동을 막지 않도록 두 채널을 무시합니다.
+	{
+		GetMesh()->SetCollisionResponseToChannel(ORCollisionChannels::Player, ECR_Ignore);
+		GetMesh()->SetCollisionResponseToChannel(ORCollisionChannels::Enemy, ECR_Ignore);
+	}
 }
 
 void AOGCharacter::BeginPlay()
