@@ -176,9 +176,10 @@ void AOGCharacter::StartDeath()
 
 	// 기존 행동 몽타주와 이동용 Root Motion이 사망 연출에 섞이지 않도록 처리합니다.
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && DeathMontage)
+	if (AnimInstance && DeathMontage && AnimInstance->Montage_Play(DeathMontage) > 0.0f)
 	{
-		AnimInstance->Montage_Play(DeathMontage);
+		// 몽타주가 끝나도 블렌드 아웃되지 않고 마지막 프레임의 사망 포즈를 유지하도록 합니다.
+		AnimInstance->GetActiveInstanceForMontage(DeathMontage)->bEnableAutoBlendOut = false;
 		return;
 	}
 
