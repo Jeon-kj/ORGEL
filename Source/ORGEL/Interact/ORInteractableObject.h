@@ -24,7 +24,7 @@ public:
 // Interaction
 // ─────────────────────────────────────────────────────────────
 public:
-	/** 실행 조건을 검사한 뒤 파생 클래스의 상호작용 결과를 반환합니다. */
+	/** 실행 조건을 검사하고, 통과하면 파생 클래스의 상호작용을 실행한 뒤 true를 반환합니다. */
 	virtual bool TryInteract(AActor* Interactor) override final;
 
 protected:
@@ -32,11 +32,11 @@ protected:
 	virtual bool CanInteract(const AActor* Interactor) const;
 
 	/** 오브젝트별 동작을 처리하며 기본 구현은 Blueprint 이벤트에 전달합니다. */
-	virtual bool PerformInteraction(AActor* Interactor);
+	virtual void PerformInteraction(AActor* Interactor);
 
-	/** 실행 조건을 통과한 요청을 Blueprint 또는 C++ 구현으로 전달합니다. */
+	/** 실행 조건을 통과한 요청을 Blueprint 구현으로 전달합니다. */
 	UFUNCTION(BlueprintImplementableEvent)
-	bool K2_PerformInteraction(AActor* Interactor);
+	void K2_PerformInteraction(AActor* Interactor);
 	
 
 // ─────────────────────────────────────────────────────────────

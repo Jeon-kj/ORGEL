@@ -34,8 +34,9 @@ bool AORInteractableObject::TryInteract(AActor* Interactor)
 	
 	UE_LOG(LogTemp, Warning, TEXT("상호작용 수행"))
 
-	// 조건을 통과한 요청만 오브젝트별 실제 동작으로 전달합니다.
-	return PerformInteraction(Interactor);
+	// 조건을 통과한 요청만 오브젝트별 실제 동작으로 전달하고 성공으로 처리합니다.
+	PerformInteraction(Interactor);
+	return true;
 }
 
 bool AORInteractableObject::CanInteract(const AActor* Interactor) const
@@ -44,8 +45,8 @@ bool AORInteractableObject::CanInteract(const AActor* Interactor) const
 	return IsValid(Interactor) && Interactor != this && !IsActorBeingDestroyed();
 }
 
-bool AORInteractableObject::PerformInteraction(AActor* Interactor)
+void AORInteractableObject::PerformInteraction(AActor* Interactor)
 {
 	// 기본 동작은 Blueprint에서 구현한 상호작용 이벤트에 전달합니다.
-	return K2_PerformInteraction(Interactor);
+	K2_PerformInteraction(Interactor);
 }
