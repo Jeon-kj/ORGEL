@@ -2,6 +2,7 @@
 
 #include "AbilitySystem/ORAbilitySet.h"
 #include "AbilitySystem/ORAbilitySystemComponent.h"
+#include "AbilitySystem/Attribute/ORCombatSet.h"
 #include "AbilitySystem/Attribute/ORHealthSet.h"
 #include "AbilitySystem/Attribute/ORMovementSet.h"
 #include "Data/ORCharacterStatData.h"
@@ -16,6 +17,7 @@ AOGPlayerState::AOGPlayerState()
 		ASC = CreateDefaultSubobject<UORAbilitySystemComponent>(TEXT("ASC"));
 		HealthSet = CreateDefaultSubobject<UORHealthSet>(TEXT("AttributeSet"));
 		MovementSet = CreateDefaultSubobject<UORMovementSet>(TEXT("MovementSet"));
+		CombatSet = CreateDefaultSubobject<UORCombatSet>(TEXT("CombatSet"));
 	}
 
 	// 캐릭터가 교체되어도 장착 상태를 유지할 장비 슬롯 컴포넌트를 생성합니다.
