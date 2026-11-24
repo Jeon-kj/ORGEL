@@ -5,6 +5,8 @@
 #include "AbilitySystem/Attribute/ORHealthSet.h"
 #include "AbilitySystem/Attribute/ORMovementSet.h"
 #include "Data/ORCharacterStatData.h"
+#include "Equipment/OREquipmentComponent.h"
+#include "GameFramework/Pawn.h"
 
 AOGPlayerState::AOGPlayerState()
 {
@@ -14,6 +16,9 @@ AOGPlayerState::AOGPlayerState()
 		HealthSet = CreateDefaultSubobject<UORHealthSet>(TEXT("AttributeSet"));
 		MovementSet = CreateDefaultSubobject<UORMovementSet>(TEXT("MovementSet"));
 	}
+
+	// 캐릭터가 교체되어도 장착 상태를 유지할 장비 슬롯 컴포넌트를 생성합니다.
+	EquipmentComponent = CreateDefaultSubobject<UOREquipmentComponent>(TEXT("EquipmentComponent"));
 
 	// 기존 기본 어빌리티 세트를 실행 시 로드하도록 연결합니다.
 	DefaultAbilitySet = TSoftObjectPtr<UORAbilitySet>(FSoftObjectPath(TEXT("/Game/_ORGEL/Blueprint/Character/Player/DA_PlayerAbilitySet.DA_PlayerAbilitySet")));

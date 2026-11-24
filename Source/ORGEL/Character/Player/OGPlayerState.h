@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerState.h"
 #include "OGPlayerState.generated.h"
 
+class UOREquipmentComponent;
 class UORMovementSet;
 class UORAbilitySet;
 class UORAbilitySystemComponent;
@@ -51,7 +52,11 @@ private:
 	/** 같은 런에서 기본 이동속도와 이동속도 효과를 유지할 속성 세트를 소유합니다. */
 	UPROPERTY(VisibleAnywhere, Category = "변수|능력치")
 	TObjectPtr<UORMovementSet> MovementSet;
-	
+
+	/** 슬롯별 장착 장비와 부여한 어빌리티 및 효과의 회수 핸들을 관리합니다. */
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UOREquipmentComponent> EquipmentComponent;
+
 	
 // ─────────────────────────────────────────────────────────────
 // Ability System Variables
