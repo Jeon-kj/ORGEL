@@ -27,7 +27,7 @@ AOGPlayerState::AOGPlayerState()
 	DefaultAbilitySet = TSoftObjectPtr<UORAbilitySet>(FSoftObjectPath(TEXT("/Game/_ORGEL/Blueprint/Character/Player/DA_PlayerAbilitySet.DA_PlayerAbilitySet")));
 
 	// 런 시작 시 지급할 태엽권총 데이터를 실행 시 로드하도록 연결합니다.
-	DefaultWeaponData = TSoftObjectPtr<UORWeaponData>(FSoftObjectPath(TEXT("/Game/_ORGEL/Blueprint/Equipment/Weapon/DA_WindupPistol.DA_WindupPistol")));
+	DefaultWeaponData = TSoftObjectPtr<UORWeaponData>(FSoftObjectPath(TEXT("/Game/_ORGEL/Blueprint/Data/Equipment/Weapon/DA_WindupPistol.DA_WindupPistol")));
 }
 
 void AOGPlayerState::BeginPlay()
