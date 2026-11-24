@@ -83,6 +83,10 @@ private:
 // ─────────────────────────────────────────────────────────────
 // Hit Feedback
 // ─────────────────────────────────────────────────────────────
+protected:
+	/** 피격 몽타주를 재생할 수 있는 상태인지 반환합니다. */
+	virtual bool CanPlayHitMontage() const { return true; }
+
 private:
 	/** 피격 색상을 최대로 적용하고 원래 색상으로 돌아가는 시간을 초기화합니다. */
 	void PlayHitFeedback();

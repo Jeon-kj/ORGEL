@@ -88,8 +88,8 @@ void AOGCharacter::BindAttributeEvents()
 	{
 		PlayHitFeedback();
 
-		// 치명타로 시작된 사망 몽타주를 피격 몽타주가 덮어쓰지 않도록 합니다.
-		if (NewHealth > 0.0f && HitMontage)
+		// 치명타로 시작된 사망 몽타주와 재생을 허용하지 않는 상태의 몽타주를 피격 몽타주가 덮어쓰지 않도록 합니다.
+		if (NewHealth > 0.0f && HitMontage && CanPlayHitMontage())
 		{
 			PlayAnimMontage(HitMontage);
 		}

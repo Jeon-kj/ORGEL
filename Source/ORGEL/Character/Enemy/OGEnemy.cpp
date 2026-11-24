@@ -60,3 +60,10 @@ void AOGEnemy::BeginPlay()
 	// 빙의는 BeginPlay 이전에 끝나므로, ASC 초기화를 마친 이 시점에 행동 트리를 시작합니다.
 	CastChecked<AOGAIController>(GetController())->StartAI();
 }
+
+bool AOGEnemy::CanPlayHitMontage() const
+{
+	// 재생 중인 몽타주가 없거나 피격 몽타주인 경우에만 새 피격 반응을 허용합니다.
+	const UAnimMontage* CurrentMontage = GetMesh()->GetAnimInstance()->GetCurrentActiveMontage();
+	return !CurrentMontage || CurrentMontage == HitMontage;
+}
