@@ -4,6 +4,7 @@
 #include "Character/OGCharacter.h"
 #include "OGEnemy.generated.h"
 
+class UORAbilitySet;
 class UORMovementSet;
 class UORCharacterStatData;
 class UORHealthSet;
@@ -45,4 +46,8 @@ private:
 	/** 몬스터 최초 생성 시 적용할 필수 초기 스탯 데이터를 참조합니다. */
 	UPROPERTY(EditDefaultsOnly, Category = "변수|초기능력치")
 	TObjectPtr<UORCharacterStatData> InitialStatData;
+
+	/** 몬스터 최초 생성 시 부여할 공격 어빌리티 묶음을 참조합니다. */
+	UPROPERTY(EditDefaultsOnly, Category = "변수|어빌리티")
+	TObjectPtr<UORAbilitySet> AbilitySet;
 };

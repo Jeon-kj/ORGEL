@@ -48,7 +48,14 @@ namespace ORGameplayTags
 
 	// 행동 제한 상태에서 상호작용 어빌리티의 발동을 차단합니다.
 	ORGEL_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Gameplay_InteractionBlocked);
-	
+
+
+// ─────────────────────────────────────────────────────────────
+// Ability
+// ─────────────────────────────────────────────────────────────
+	// AI가 발동할 몬스터 어빌리티를 구분합니다.
+	ORGEL_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Enemy_Attack);
+
 
 // ─────────────────────────────────────────────────────────────
 // Ability Cooldown

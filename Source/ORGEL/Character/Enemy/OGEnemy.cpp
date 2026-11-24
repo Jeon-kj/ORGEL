@@ -1,5 +1,6 @@
 ﻿#include "OGEnemy.h"
 
+#include "AbilitySystem/ORAbilitySet.h"
 #include "AbilitySystem/ORAbilitySystemComponent.h"
 #include "AbilitySystem/Attribute/ORHealthSet.h"
 #include "AbilitySystem/Attribute/ORMovementSet.h"
@@ -40,6 +41,9 @@ void AOGEnemy::BeginPlay()
 
 	// 생성자에서 생성되어 자동 등록된 속성 세트를 초기화합니다.
 	ASC->InitializeAttributeSets(*InitialStatData);
+
+	// 행동 트리가 발동할 공격 어빌리티를 부여합니다.
+	AbilitySet->GiveToAbilitySystem(ASC, nullptr, this);
 
 	// 부모의 공통 사망 이벤트를 등록합니다.
 	BindAttributeEvents();
